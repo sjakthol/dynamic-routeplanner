@@ -9,3 +9,7 @@
   overflow: auto;
   white-space: pre;
 }
+
+.error-message .button {
+  margin-left: 1em;
+}

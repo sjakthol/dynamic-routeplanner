@@ -2,9 +2,10 @@
 
 ```
 {
-  error: CustomError {
-    message: "Human readable error message about an exception",
-    originalException: new Error()
+  error: new Error("Human readable error message about an exception"),
+  stops: {
+    isFetching: false,
+    entities: [Stop, Stop, ..., Stop]
   }
 }
 ```

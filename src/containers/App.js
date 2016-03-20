@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import { dismissError } from '../actions';
 import ErrorBar from '../components/ErrorBar';
-import CustomError from '../models/CustomError';
 
 import 'normalize.css/normalize.css';
 import 'milligram';
@@ -28,7 +27,7 @@ class App extends React.Component {
 
 App.propTypes = {
   children: React.PropTypes.node,
-  error: React.PropTypes.instanceOf(CustomError),
+  error: React.PropTypes.instanceOf(Error),
   dismissError: React.PropTypes.func.isRequired,
 };
 

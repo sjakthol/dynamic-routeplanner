@@ -1,5 +1,4 @@
 import React from 'react';
-import CustomError from '../../models/CustomError';
 
 import './style.css';
 
@@ -14,7 +13,7 @@ export default class ErrorBar extends React.Component {
     this.setState({ showDetails: !this.state.showDetails });
   }
 
-  renderOriginalException(error) {
+  renderStack(error) {
     if (!error) {
       return null;
     }
@@ -25,7 +24,6 @@ export default class ErrorBar extends React.Component {
 
     return (
       <div>
-        <p>{error.message}</p>
         <strong style={{ fontWeight: 'bold' }}>Stack Trace:</strong>
         <blockquote className="error-bar-stack">{error.stack}</blockquote>
       </div>
@@ -35,21 +33,25 @@ export default class ErrorBar extends React.Component {
   render() {
     return (
       <div className="error-message">
-        <strong style={{ fontWeight: 'bold' }}>Error: </strong>
-        <span>{this.props.error.message}</span>
-        <button className="button button-clear" onClick={this.toggleDetails}>
-          {this.state.showDetails ? 'Hide Details' : 'Show Details'}
-        </button>
-        <button className="button button-outline" onClick={this.props.onDismissError}>
-          Dismiss Error
-        </button>
-        {this.renderOriginalException(this.props.error.originalException)}
+        <p>
+          <strong style={{ fontWeight: 'bold' }}>Error: </strong>
+          <span>{this.props.error.message || 'Unknown exception occurred.'}</span>
+        </p>
+        <div>
+          <button className="button button" onClick={this.props.onDismissError}>
+            Dismiss
+          </button>
+          <button className="button button-outline" onClick={this.toggleDetails}>
+            {this.state.showDetails ? 'Hide Details' : 'Show Details'}
+          </button>
+        </div>
+        {this.renderStack(this.props.error)}
       </div>
     );
   }
 }
 
 ErrorBar.propTypes = {
-  error: React.PropTypes.instanceOf(CustomError),
+  error: React.PropTypes.instanceOf(Error),
   onDismissError: React.PropTypes.func.isRequired,
 };
