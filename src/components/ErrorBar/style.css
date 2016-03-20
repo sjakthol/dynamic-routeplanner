@@ -1,0 +1,11 @@
+.error-message {
+  padding: 1.5rem;
+  background-color: lavenderblush;
+}
+
+.error-bar-stack {
+  font-family: monospace;
+  max-height: 10rem;
+  overflow: auto;
+  white-space: pre;
+}
