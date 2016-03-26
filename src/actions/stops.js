@@ -6,6 +6,9 @@ export const loadStops = createAction(LOAD_STOPS);
 export const RECEIVE_STOPS = 'RECEIVE_STOPS';
 export const receiveStops = createAction(RECEIVE_STOPS);
 
+export const STOP_SELECTED = 'STOP_SELECTED';
+export const stopSelected = createAction(STOP_SELECTED);
+
 const STOP_LIST_KEY = 'STOP_LIST';
 const STOP_LIST_CACHE_MS = 24 * 60 * 60 * 1000;
 const STOP_LIST_API = 'http://beta.digitransit.fi/otp/routers/hsl/index/stops';
