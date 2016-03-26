@@ -11,7 +11,7 @@ const STOP_LIST_CACHE_MS = 24 * 60 * 60 * 1000;
 const STOP_LIST_API = 'http://beta.digitransit.fi/otp/routers/hsl/index/stops';
 
 function shouldFetchStops(state) {
-  return !state.stops.isFetching && !state.stops.entities.length;
+  return !state.stops.isFetching && !state.stops.stopData;
 }
 
 /**

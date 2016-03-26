@@ -14,6 +14,7 @@
   "author": "Sami Jaktholm <sjakthol@outlook.com>",
   "license": "MIT",
   "dependencies": {
+    "immutable": "^3.7.6",
     "isomorphic-fetch": "^2.2.1",
     "milligram": "^1.1.0",
     "react": "^0.14.7",

@@ -3,9 +3,13 @@
 ```
 {
   error: new Error("Human readable error message about an exception"),
+  routing: ReactRouter data
   stops: {
     isFetching: false,
-    entities: [Stop, Stop, ..., Stop]
+    stop_data: {
+      "id": {},
+      "id2": {},
+    }
   }
 }
 ```
