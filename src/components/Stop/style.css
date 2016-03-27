@@ -1,0 +1,15 @@
+.stoptimes-pattern-times {
+  padding-left: 7px;
+}
+
+.stoptimes-pattern-desc {
+  font-weight: bold;
+}
+
+.realtime-updated {
+  color: orangered;
+}
+
+.realtime-ontime {
+  color: green;
+}

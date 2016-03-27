@@ -14,10 +14,12 @@
     stopTimes: {
       "id": {
         timestamp: Date.now(),
+        isFetching: true|false
         patterns: [],
       },
       "id2": {
         timestamp: Date.now(),
+        isFetching: true|false
         patterns: [],
       },
     },
