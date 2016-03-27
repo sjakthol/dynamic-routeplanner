@@ -6,9 +6,25 @@
   routing: ReactRouter data
   stops: {
     isFetching: false,
-    stop_data: {
+    stopData: {
       "id": {},
       "id2": {},
+    },
+
+    stopTimes: {
+      "id": {
+        timestamp: Date.now(),
+        patterns: [],
+      },
+      "id2": {
+        timestamp: Date.now(),
+        patterns: [],
+      },
+    },
+
+    selectedStop: {
+      value: "stop-id",
+      label: "stop-name",
     }
   }
 }

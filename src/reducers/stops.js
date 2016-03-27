@@ -20,8 +20,18 @@ const receiveStops = (state = initialState, action) => {
               .set('stopData', new Immutable.Map(stops));
 };
 
+/**
+ * A reducer that updates the selected stop. The action payload should be an
+ * object with following form:
+ *   { label: "Stop Name", value: "Stop ID" }
+ *
+ * @param state {Immutable.Map} - The stops state object.
+ * @param action {Object} - Flux standard action.
+ *
+ * @return {Immutable.Map} - The updated state.
+ */
 const stopSelected = (state = initialState, action) =>
-  state.set('selectedStop', Immutable.fromJS(action.payload));
+  state.set('selectedStop', new Immutable.Map(action.payload));
 
 const stopsReducer = handleActions({
   [LOAD_STOPS]: loadStops,

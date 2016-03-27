@@ -13,23 +13,36 @@ class Stops extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { options: [], value: '' };
-    this.updateOptionList(props);
+    const stopData = this.props.stops.get('stopData');
+    const options = this.getOptionList(stopData);
+
+    this.state = { options, value: '' };
   }
 
+  /**
+   * Triggers stop list fetch when the component is mounted.
+   */
   componentWillMount() {
     this.props.fetchStopsIfNeeded();
   }
 
+  /**
+   * Updates option list when new props are received.
+   */
   componentWillReceiveProps(props) {
-    this.updateOptionList(props);
+    const stopData = props.stops.get('stopData');
+    if (stopData === this.props.stops.get('stopData')) {
+      // Immutable objects, nothing changed.
+      return;
+    }
+
+    const options = this.getOptionList(stopData);
+    this.setState({ options });
   }
 
-  updateOptionList(props) {
-    const { stops } = props;
-    const stopData = stops.get('stopData');
+  getOptionList(stopData) {
     if (!stopData) {
-      return;
+      return [];
     }
 
     const values = stopData.toIndexedSeq().toArray();
@@ -38,7 +51,7 @@ class Stops extends React.Component {
       label: `${stop.get('name')} (${stop.get('code')})`,
     }));
 
-    this.setState({ options });
+    return options;
   }
 
   filterOption(option, filter) {
@@ -61,13 +74,12 @@ class Stops extends React.Component {
         <h2>Stop Timetables</h2>
         <Select
           autoBlur
-          onBlurResetsInput={false}
           ignoreAccents={false}
           filterOption={this.filterOption}
           options={this.state.options}
-          value={value ? value.toJS() : null}
+          value={value.size ? value.toJS() : null}
           onChange={this.props.stopSelected}
-          placeholder={"Find a Stop..."}
+          placeholder={'Find a Stop...'}
         />
         {this.renderStop(value)}
       </div>
