@@ -1,3 +1,10 @@
+This repository contains Redux + React based demo POCs for the Aalto University School of Science [dynamic
+routeplanner course project](https://dynaaminenseksti.wordpress.com/) (in Finnish).
+
+Currently it contains a demo that shows the next departures for
+a given stop in the Helsinki area: [live demo](http://sjakthol.github.io/drp/)
+
+
 ## Store Layout
 
 ```
