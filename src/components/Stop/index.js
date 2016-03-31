@@ -3,6 +3,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import './style.css';
 
+const UPDATE_INTERVAL = 12000;
+
 /**
  * A component that renders next departures for patterns that travel through
  * a specific stop.
@@ -16,7 +18,7 @@ class Stop extends React.Component {
 
     this.updateInterval = setInterval(() => {
       this.props.updateStoptimes(this.props.stopId);
-    }, 35000);
+    }, UPDATE_INTERVAL);
   }
 
   /**
