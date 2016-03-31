@@ -16,7 +16,7 @@ export const RECEIVE_STOP_TIMES = 'RECEIVE_STOP_TIMES';
 export const receiveStopTimes = createAction(RECEIVE_STOP_TIMES);
 
 const STOP_LIST_KEY = 'STOP_LIST';
-const STOP_LIST_CACHE_MS = 24 * 60 * 60 * 1000;
+const STOP_LIST_CACHE_MS = 7 * 24 * 60 * 60 * 1000;
 const STOP_TIME_CACHE_MS = 10000;
 const STOP_LIST_API = 'http://beta.digitransit.fi/otp/routers/hsl/index/stops';
 const STOPTIMES_API_TMPL = 'http://beta.digitransit.fi/otp/routers/hsl/index/stops/:STOP_ID/stoptimes';
