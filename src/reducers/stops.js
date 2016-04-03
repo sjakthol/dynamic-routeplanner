@@ -51,7 +51,7 @@ const receiveStops = (state = initialState, action) => {
  * @return {Immutable.Map} - The updated state.
  */
 const stopSelected = (state = initialState, action) =>
-  state.set('selectedStop', action.payload ? new Immutable.Map(action.payload) : null);
+  state.set('selectedStop', new Immutable.Map(action.payload));
 
 /**
  * Marks a stoptime fetch in-progress for the given stop.
