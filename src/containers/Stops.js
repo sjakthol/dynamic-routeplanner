@@ -5,8 +5,15 @@ import { connect } from 'react-redux';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
-import { fetchStopsIfNeeded, fetchStopTimesIfNeeded, stopSelected } from '../actions/stops';
+import {
+  fetchStopsIfNeeded,
+  fetchStopTimesIfNeeded,
+  stopSelected,
+  removeFavorite,
+  saveFavorite,
+} from '../actions/stops';
 import Stop from '../components/Stop';
+import FavoriteStopList from '../components/FavoriteStopList';
 
 /**
  * The minimum length of the filter string before matching any options.
@@ -19,11 +26,7 @@ const FILTER_MIN_LENGTH = 2;
 class Stops extends React.Component {
   constructor(props) {
     super(props);
-
-    const stopData = this.props.stops.get('stopData');
-    const options = this.getOptionList(stopData);
-
-    this.state = { options, value: '' };
+    this.state = { options: [], value: '' };
   }
 
   /**
@@ -37,36 +40,65 @@ class Stops extends React.Component {
    * Updates option list when new props are received.
    */
   componentWillReceiveProps(props) {
-    const stopData = props.stops.get('stopData');
-    if (stopData === this.props.stops.get('stopData')) {
-      // Immutable objects, nothing changed.
-      return;
-    }
-
-    const options = this.getOptionList(stopData);
-    this.setState({ options });
+    this.updateOptionList(props.stops);
   }
 
   /**
-   * Given an Immutable stopData Map, returns the options array for
-   * react-select.
+   * Retrieve the information for given stop from the stop data.
    *
-   * @param stopData {Immutable.Map} - The stopData map.
+   * @param stops {Immutable.Map} - The stops state object.
+   * @param stopId {String} - The ID for the stop to query.
    *
-   * @return {Array} - An array of { value, label } objects for react-select.
+   * @return {Immutable.Map} The stop information for the given stop or null
+   * if stop was not found.
    */
-  getOptionList(stopData) {
-    if (!stopData) {
-      return [];
+  getStopInfo(stops, stopId) {
+    // Do we have any data in the state?
+    if (!stops || stops.isEmpty()) {
+      return null;
     }
 
-    const values = stopData.toIndexedSeq().toArray();
-    const options = values.map(stop => ({
+    // Do we have the stop data?
+    const stopData = stops.get('stopData');
+    if (!stopData || stopData.isEmpty()) {
+      return null;
+    }
+
+    // Do we have data for the stop?
+    const stop = stopData.get(stopId);
+    if (!stop || stop.isEmpty()) {
+      return null;
+    }
+
+    // Yes \o/
+    return this.stopToSelection(stop);
+  }
+
+  stopToSelection(stop) {
+    return {
       value: stop.get('id'),
       label: `${stop.get('name')} (${stop.get('code')})`,
-    }));
+    };
+  }
 
-    return options;
+
+  /**
+   * Given an Immutable stopData Map, updates the options array in the state if
+   * required.
+   *
+   * @param stops {Immutable.Map} - The stops state object.
+   */
+  updateOptionList(stops) {
+    const newStopData = stops.get('stopData');
+    if (this.props.stops.get('stopData') === newStopData) {
+      // Unchanged stopData;
+      return;
+    }
+
+    const values = newStopData.toIndexedSeq().toArray();
+    const options = values.map(this.stopToSelection, this);
+
+    this.setState({ options });
   }
 
   /**
@@ -83,12 +115,38 @@ class Stops extends React.Component {
            option.label.toLowerCase().startsWith(searchString);
   }
 
+  renderEmptyMessage() {
+    const message = 'Select a stop by typing the stop name to the field above.';
+    const favorites = this.props.stops.get('favorites');
+    if (!favorites || favorites.isEmpty()) {
+      return <p>{message}</p>;
+    }
+
+    const favoriteData = favorites.map(stopId => {
+      const stopData = this.getStopInfo(this.props.stops, stopId);
+      if (!stopData) {
+        return null;
+      }
+
+      return Immutable.fromJS(stopData);
+    }).filter(n => !!n);
+
+    if (favoriteData.size === 0) {
+      return <p>{message}</p>;
+    }
+
+    return (
+      <div>
+        <p>{message} Alternatively, you can choose a favorite stop below:</p>
+        <FavoriteStopList favorites={favoriteData.toList()} onSelect={this.props.stopSelected} />
+      </div>
+    );
+  }
+
   renderStop() {
     const selectedStop = this.props.stops.get('selectedStop');
     if (!selectedStop.size) {
-      return (
-        <p>Select a stop by typing the stop name to the field above</p>
-      );
+      return this.renderEmptyMessage();
     }
 
     const stopId = selectedStop.get('value');
@@ -122,12 +180,37 @@ class Stops extends React.Component {
     />);
   }
 
+  renderFavoriteButton() {
+    const selected = this.props.stops.get('selectedStop');
+    if (!selected || !selected.size) {
+      return null;
+    }
+
+    const selectedId = selected.get('value');
+    const favorites = this.props.stops.get('favorites');
+
+    const style = { marginTop: '1em', width: '100%' };
+
+    if (favorites.has(selectedId)) {
+      const remove = this.props.removeFavorite.bind(null, selectedId);
+      return (
+        <button style={style} onClick={remove}>Remove from Favorites</button>
+      );
+    }
+
+    const add = this.props.saveFavorite.bind(null, selectedId);
+    return (
+      <button style={style} onClick={add}>Save to Favorites</button>
+    );
+  }
+
   render() {
     return (
       <div>
         <h2>Stop Timetables</h2>
         <div style={{ marginBottom: '1em' }}>
           {this.renderSelectDropdown()}
+          {this.renderFavoriteButton()}
         </div>
         {this.renderStop()}
       </div>
@@ -140,6 +223,8 @@ Stops.propTypes = {
   fetchStopsIfNeeded: React.PropTypes.func.isRequired,
   fetchStopTimesIfNeeded: React.PropTypes.func.isRequired,
   stopSelected: React.PropTypes.func.isRequired,
+  saveFavorite: React.PropTypes.func.isRequired,
+  removeFavorite: React.PropTypes.func.isRequired,
 };
 
 /**
@@ -153,4 +238,6 @@ export default connect(mapStateToProps, {
   fetchStopsIfNeeded,
   fetchStopTimesIfNeeded,
   stopSelected,
+  saveFavorite,
+  removeFavorite,
 })(Stops);

@@ -1,11 +1,14 @@
 import Immutable from 'immutable';
 import { handleActions } from 'redux-actions';
 
+import { getFavoritesFromStorage } from '../middleware/persist-favorites';
 import { LOAD_STOPS, RECEIVE_STOPS,
          STOP_SELECTED,
-         LOAD_STOP_TIMES, RECEIVE_STOP_TIMES } from '../actions/stops';
+         LOAD_STOP_TIMES, RECEIVE_STOP_TIMES,
+         SAVE_FAVORITE, REMOVE_FAVORITE } from '../actions/stops';
 
 const initialState = Immutable.fromJS({
+  favorites: new Immutable.Set(getFavoritesFromStorage()),
   isFetching: false,
   stopData: {},
   stopTimes: {},
@@ -86,12 +89,28 @@ const receiveStopTimes = (state = initialState, action) => {
   return state.setIn(['stopTimes', action.payload.stopId], data);
 };
 
+/**
+ * Adds the given stopid to the list of favorites.
+ *
+ * @param state {Immutable.Map} - The stops state object.
+ * @param action {Object} - Flux standard action.
+ *
+ * @return {Immutable.Map} - The updated state.
+ */
+const saveFavorite = (state = initialState, action) =>
+  state.set('favorites', state.get('favorites').add(action.payload));
+
+const removeFavorite = (state = initialState, action) =>
+  state.set('favorites', state.get('favorites').delete(action.payload));
+
 const stopsReducer = handleActions({
   [LOAD_STOPS]: { next: loadStops },
   [RECEIVE_STOPS]: { next: receiveStops },
   [STOP_SELECTED]: { next: stopSelected },
   [RECEIVE_STOP_TIMES]: { next: receiveStopTimes },
   [LOAD_STOP_TIMES]: { next: loadingStopTimes },
+  [SAVE_FAVORITE]: { next: saveFavorite },
+  [REMOVE_FAVORITE]: { next: removeFavorite },
 }, initialState);
 
 export default stopsReducer;

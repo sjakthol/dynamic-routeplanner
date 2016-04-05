@@ -15,6 +15,12 @@ export const loadStopTimes = createAction(LOAD_STOP_TIMES);
 export const RECEIVE_STOP_TIMES = 'RECEIVE_STOP_TIMES';
 export const receiveStopTimes = createAction(RECEIVE_STOP_TIMES);
 
+export const SAVE_FAVORITE = 'SAVE_FAVORITE';
+export const saveFavorite = createAction(SAVE_FAVORITE);
+
+export const REMOVE_FAVORITE = 'REMOVE_FAVORITE';
+export const removeFavorite = createAction(REMOVE_FAVORITE);
+
 const STOP_LIST_KEY = 'STOP_LIST';
 const STOP_LIST_CACHE_MS = 7 * 24 * 60 * 60 * 1000;
 const STOP_TIME_CACHE_MS = 10000;
